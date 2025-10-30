@@ -1,0 +1,7 @@
+[workspace]
+members = ["bins/evm", "crates/evm_core", "crates/primitives"]
+
+[workspace.dependencies]
+alloy = "1.0.41"
+# alloy = {git = "https://github.com/alloy-rs/alloy", branch = "main"}
+primitives = { path = "./crates/primitives"}
