@@ -1,15 +1,15 @@
 use crate::errors::EvmErrors;
-use alloy::primitives::B256;
+use alloy::primitives::{U256};
 
 #[derive(Debug, Clone, Default)]
 pub struct Stack {
-    pub data: Vec<B256>,
+    pub data: Vec<U256>,
 }
 
 impl Stack {
     /// Push a value onto the stack.
     /// Returns `Err(EvmErrors::StackTooDeep)` if the stack would exceed 1024 items.
-    pub fn push(&mut self, value: B256) -> Result<(), EvmErrors> {
+    pub fn push(&mut self, value: U256) -> Result<(), EvmErrors> {
         if self.data.len() >= 1024 {
             return Err(EvmErrors::StackTooDeep);
         }
@@ -18,7 +18,7 @@ impl Stack {
     }
 
     /// Pop a value from the stack. Returns `None` if the stack is empty.
-    pub fn pop(&mut self) -> Option<B256> {
+    pub fn pop(&mut self) -> Option<U256> {
         self.data.pop()
     }
 
@@ -37,25 +37,25 @@ impl Stack {
 mod tests {
     use super::*;
     use crate::errors::EvmErrors;
-    use alloy::primitives::B256;
+    use alloy::primitives::U256;
 
-    /// Helper to create distinct B256 values for tests.
+    /// Helper to create distinct U256 values for tests.
     /// Creates a 32-byte value with the last byte set to `n`.
-    fn make_b256(n: u8) -> B256 {
+    fn make_u(n: u8) -> U256 {
         let mut bytes = [0u8; 32];
         bytes[31] = n;
-        // Many B256 implementations provide `From<[u8; 32]>`.
-        // This keeps tests readable and produces distinct values.
-        B256::from(bytes)
+        // Many implementations provide `From<[u8; 32]>` for U256.
+        // Use that to construct a U256 from the bytes.
+        U256::from(bytes)
     }
 
     #[test]
     fn push_pop_lifo_behavior() {
         let mut stack = Stack::default();
 
-        let a = make_b256(1);
-        let b = make_b256(2);
-        let c = make_b256(3);
+        let a = make_u(1);
+        let b = make_u(2);
+        let c = make_u(3);
 
         // Push values in order a, b, c
         assert!(stack.push(a.clone()).is_ok());
@@ -83,8 +83,8 @@ mod tests {
         assert_eq!(stack.pop(), None);
 
         // After pushing and popping everything, pop again returns None
-        stack.push(make_b256(42)).unwrap();
-        assert_eq!(stack.pop(), Some(make_b256(42)));
+        stack.push(make_u(42)).unwrap();
+        assert_eq!(stack.pop(), Some(make_u(42)));
         assert_eq!(stack.pop(), None);
     }
 
@@ -94,7 +94,7 @@ mod tests {
 
         // Fill the stack up to the limit (1024)
         for i in 0..1024 {
-            let v = make_b256((i % 256) as u8);
+            let v = make_u((i % 256) as u8);
             stack.push(v).expect("push within capacity should succeed");
         }
 
@@ -102,7 +102,7 @@ mod tests {
         assert_eq!(stack.len(), 1024);
 
         // Pushing one more item should return the `StackTooDeep` error
-        let result = stack.push(make_b256(0xff));
+        let result = stack.push(make_u(0xff));
         assert!(matches!(result, Err(EvmErrors::StackTooDeep)));
     }
 }

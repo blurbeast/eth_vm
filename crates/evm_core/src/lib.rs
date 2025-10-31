@@ -1,16 +1,22 @@
 
 pub mod opcodes;
 pub mod jump_tables;
+pub mod operations {
+    pub mod ariths;
+}
 
-use alloy::primitives::Address;
+use alloy::primitives::{Address,};
 use primitives::{evm_types::{ BlockEnv, EvmStorage, Transaction }, memory::Memory, stack::Stack};
 
+use crate::{jump_tables::build_jump_table, opcodes::Opcode};
 
-#[derive(Debug, Clone, Default)]
+
+#[derive(Debug, Clone, Default, PartialEq)]
 pub enum ProgramExitStatus {
     Success,
-    #[default]
     Failure,
+    #[default]
+    Default,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -21,7 +27,7 @@ pub struct Evm {
     pub stack: Stack,
     pub storage: EvmStorage,
     pub pc: usize,
-    pub state: ProgramExitStatus,
+    pub status: ProgramExitStatus,
 }
 
 
@@ -34,7 +40,7 @@ impl Evm {
             stack,
             storage,
             pc: 0,
-            state: ProgramExitStatus::default(),
+            status: ProgramExitStatus::default(),
         }
     }
     
@@ -57,6 +63,16 @@ impl Evm {
     
     pub fn step(&mut self) {
         let raw_instruction = self.memory.load_byte(self.pc);
+        let instruction: Opcode = Opcode::from_u8(raw_instruction).unwrap();
         
+        let jump_tables: [fn(&mut Evm); 256] = build_jump_table();
+        jump_tables[instruction as usize](self);
+        self.pc += 1;
+    }
+    
+    pub fn run(&mut self) {
+        while self.status == ProgramExitStatus::default() {
+            self.step();
+        }
     }
 }
