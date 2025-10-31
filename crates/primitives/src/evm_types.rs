@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 
-use alloy::primitives::{U256, Address};
-
+use alloy::primitives::{Address, U256};
 
 #[derive(Debug, Clone, Default)]
 pub struct Transaction {
@@ -12,7 +11,6 @@ pub struct Transaction {
     pub data: Vec<u8>,
     pub gas_limit: U256,
 }
-
 
 #[derive(Debug, Clone, Default)]
 pub struct BlockEnv {
@@ -35,9 +33,5 @@ pub struct EvmAccount {
 
 #[derive(Debug, Clone, Default)]
 pub struct EvmStorage {
-    pub data: HashMap<Address, EvmAccount>
+    pub data: HashMap<Address, EvmAccount>,
 }
-
-
-
-

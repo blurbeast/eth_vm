@@ -162,7 +162,7 @@ pub enum Opcode {
     DUPN = 0xE6,
     SWAPN = 0xE7,
     EXCHANGE = 0xE8,
-    
+
     EOFCREATE = 0xEC,
     RETURNCONTRACT = 0xEE,
 
@@ -172,13 +172,13 @@ pub enum Opcode {
     RETURN = 0xF3,
     DELEGATECALL = 0xF4,
     CREATE2 = 0xF5,
-    
+
     RETURNDATALOAD = 0xF7,
     EXTCALL = 0xF8,
     EXTDELEGATECALL = 0xF9,
     STATICCALL = 0xFA,
     EXTSTATICCALL = 0xFB,
-    
+
     REVERT = 0xFD,
     INVALID = 0xFE,
     SELFDESTRUCT = 0xFF,

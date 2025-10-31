@@ -1,5 +1,5 @@
 use crate::errors::EvmErrors;
-use alloy::primitives::{U256};
+use alloy::primitives::U256;
 
 #[derive(Debug, Clone, Default)]
 pub struct Stack {
