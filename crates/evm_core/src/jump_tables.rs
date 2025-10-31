@@ -14,6 +14,5 @@ pub fn build_jump_table() -> [OpcodeFn; 256] {
     jump_table[Opcode::MUL as usize] = mul;
     jump_table[Opcode::DIV as usize] = div;
     
-    
     jump_table
 }

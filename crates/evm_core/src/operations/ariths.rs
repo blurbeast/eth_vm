@@ -48,7 +48,6 @@ pub fn sdiv(evm: &mut Evm) {
         let result = a_int / b_int;
         let result_unsigned = U256::from_limbs(*result.as_limbs());
         evm.stack.push(result_unsigned).unwrap();
-        
     }
 }
 
@@ -90,7 +89,6 @@ pub fn modulo(evm: &mut Evm) {
     }
 }
 
-
 pub fn smod(evm: &mut Evm) {
     let a: U256 = evm.stack.pop().unwrap();
     let b: U256 = evm.stack.pop().unwrap();
@@ -102,5 +100,11 @@ pub fn smod(evm: &mut Evm) {
 }
 
 
+pub fn exp(evm: &mut Evm) {
+    let base: U256 = evm.stack.pop().unwrap();
+    let exponent: U256 = evm.stack.pop().unwrap();
+        let result = base.pow(exponent);
+        evm.stack.push(result).unwrap();
+}
 
 

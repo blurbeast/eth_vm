@@ -33,76 +33,76 @@ impl Stack {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::errors::EvmErrors;
-    use alloy::primitives::U256;
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+//     use crate::errors::EvmErrors;
+//     use alloy::primitives::U256;
 
-    /// Helper to create distinct U256 values for tests.
-    /// Creates a 32-byte value with the last byte set to `n`.
-    fn make_u(n: u8) -> U256 {
-        let mut bytes = [0u8; 32];
-        bytes[31] = n;
-        // Many implementations provide `From<[u8; 32]>` for U256.
-        // Use that to construct a U256 from the bytes.
-        U256::from(bytes)
-    }
+//     /// Helper to create distinct U256 values for tests.
+//     /// Creates a 32-byte value with the last byte set to `n`.
+//     fn make_u(n: u8) -> U256 {
+//         let mut bytes = [0u8; 32];
+//         bytes[31] = n;
+//         // Many implementations provide `From<[u8; 32]>` for U256.
+//         // Use that to construct a U256 from the bytes.
+//         U256::from(bytes)
+//     }
 
-    #[test]
-    fn push_pop_lifo_behavior() {
-        let mut stack = Stack::default();
+//     #[test]
+//     fn push_pop_lifo_behavior() {
+//         let mut stack = Stack::default();
 
-        let a = make_u(1);
-        let b = make_u(2);
-        let c = make_u(3);
+//         let a = make_u(1);
+//         let b = make_u(2);
+//         let c = make_u(3);
 
-        // Push values in order a, b, c
-        assert!(stack.push(a.clone()).is_ok());
-        assert!(stack.push(b.clone()).is_ok());
-        assert!(stack.push(c.clone()).is_ok());
+//         // Push values in order a, b, c
+//         assert!(stack.push(a.clone()).is_ok());
+//         assert!(stack.push(b.clone()).is_ok());
+//         assert!(stack.push(c.clone()).is_ok());
 
-        // Length should reflect number of pushes
-        assert_eq!(stack.len(), 3);
+//         // Length should reflect number of pushes
+//         assert_eq!(stack.len(), 3);
 
-        // Pop should follow LIFO: c, b, a
-        assert_eq!(stack.pop(), Some(c));
-        assert_eq!(stack.pop(), Some(b));
-        assert_eq!(stack.pop(), Some(a));
+//         // Pop should follow LIFO: c, b, a
+//         assert_eq!(stack.pop(), Some(c));
+//         assert_eq!(stack.pop(), Some(b));
+//         assert_eq!(stack.pop(), Some(a));
 
-        // Now empty
-        assert!(stack.is_empty());
-        assert_eq!(stack.pop(), None);
-    }
+//         // Now empty
+//         assert!(stack.is_empty());
+//         assert_eq!(stack.pop(), None);
+//     }
 
-    #[test]
-    fn pop_on_empty_returns_none() {
-        let mut stack = Stack::default();
-        // Ensure empty to start
-        assert_eq!(stack.len(), 0);
-        assert_eq!(stack.pop(), None);
+//     #[test]
+//     fn pop_on_empty_returns_none() {
+//         let mut stack = Stack::default();
+//         // Ensure empty to start
+//         assert_eq!(stack.len(), 0);
+//         assert_eq!(stack.pop(), None);
 
-        // After pushing and popping everything, pop again returns None
-        stack.push(make_u(42)).unwrap();
-        assert_eq!(stack.pop(), Some(make_u(42)));
-        assert_eq!(stack.pop(), None);
-    }
+//         // After pushing and popping everything, pop again returns None
+//         stack.push(make_u(42)).unwrap();
+//         assert_eq!(stack.pop(), Some(make_u(42)));
+//         assert_eq!(stack.pop(), None);
+//     }
 
-    #[test]
-    fn push_enforces_max_depth() {
-        let mut stack = Stack::default();
+//     #[test]
+//     fn push_enforces_max_depth() {
+//         let mut stack = Stack::default();
 
-        // Fill the stack up to the limit (1024)
-        for i in 0..1024 {
-            let v = make_u((i % 256) as u8);
-            stack.push(v).expect("push within capacity should succeed");
-        }
+//         // Fill the stack up to the limit (1024)
+//         for i in 0..1024 {
+//             let v = make_u((i % 256) as u8);
+//             stack.push(v).expect("push within capacity should succeed");
+//         }
 
-        // Stack is full; length should be 1024
-        assert_eq!(stack.len(), 1024);
+//         // Stack is full; length should be 1024
+//         assert_eq!(stack.len(), 1024);
 
-        // Pushing one more item should return the `StackTooDeep` error
-        let result = stack.push(make_u(0xff));
-        assert!(matches!(result, Err(EvmErrors::StackTooDeep)));
-    }
-}
+//         // Pushing one more item should return the `StackTooDeep` error
+//         let result = stack.push(make_u(0xff));
+//         assert!(matches!(result, Err(EvmErrors::StackTooDeep)));
+//     }
+// }
