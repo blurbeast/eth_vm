@@ -1,4 +1,4 @@
-use alloy::primitives::{Address, Bytes, I256, U256};
+use alloy::{primitives::{Address, I256, U256},};
 
 use crate::{Evm, ProgramExitStatus};
 
@@ -218,5 +218,12 @@ pub fn address(evm: &mut Evm) {
     
     let value = U256::from_be_bytes(padded);
     evm.stack.push(value).unwrap();
+}
+
+pub fn balance(evm: &mut Evm) {
+    let address: Address = evm.tx.from;
     
+    let address_account = evm.storage.data.get(&address).unwrap();
+    let balance: U256 = address_account.balance;
+    evm.stack.push(balance).unwrap();
 }
