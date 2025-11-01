@@ -1,6 +1,4 @@
-use alloy::{
-    primitives::{I256, U256}
-};
+use alloy::primitives::{Address, Bytes, I256, U256};
 
 use crate::{Evm, ProgramExitStatus};
 
@@ -208,4 +206,15 @@ pub fn mstore(evm: &mut Evm) {
     
     evm.memory.store_word(offset, value);
 
+}
+
+pub fn address(evm: &mut Evm) {
+    let address: Address = evm.tx.from;
+   
+    let mut padded = [0u8; 32];
+    padded[12..].copy_from_slice(address.as_slice());
+    
+    let value = U256::from_be_bytes(padded);
+    evm.stack.push(value).unwrap();
+    
 }
