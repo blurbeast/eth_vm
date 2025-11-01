@@ -211,8 +211,10 @@ pub fn mstore(evm: &mut Evm) {
 pub fn address(evm: &mut Evm) {
     let address: Address = evm.tx.from;
    
-    let mut padded = [0u8; 32];
-    padded[12..].copy_from_slice(address.as_slice());
+    let mut padded = [0u8; 32]; // length is 32 bytes
+    
+    // the address is 20bytes long, hence, padded with zero 
+    padded[12..].copy_from_slice(address.as_slice()); // 
     
     let value = U256::from_be_bytes(padded);
     evm.stack.push(value).unwrap();
