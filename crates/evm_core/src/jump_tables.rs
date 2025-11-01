@@ -14,6 +14,9 @@ pub fn build_jump_table() -> [OpcodeFn; 256] {
     jump_table[Opcode::SDIV as usize] = sdiv;
     jump_table[Opcode::SMOD as usize] = smod;
     jump_table[Opcode::MOD as usize] = modulo;
+    // jump_table[Opcode::MLOAD as usize] = m_load;
+    // jump_table[Opcode::CHAINID as usize] = chain_id;
+    // jump_table[Opcode::COINBASE as usize] = coin_base;
     
 
     jump_table

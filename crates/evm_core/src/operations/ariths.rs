@@ -1,4 +1,4 @@
-use alloy::{primitives::{Address, I256, U256},};
+use alloy::primitives::{Address, I256, U64, U256};
 
 use crate::{Evm, ProgramExitStatus};
 
@@ -209,7 +209,7 @@ pub fn mstore(evm: &mut Evm) {
 }
 
 pub fn address(evm: &mut Evm) {
-    let address: Address = evm.tx.from;
+    let address: Address = evm.tx.to;
    
     let mut padded = [0u8; 32]; // length is 32 bytes
     
@@ -226,4 +226,98 @@ pub fn balance(evm: &mut Evm) {
     let address_account = evm.storage.data.get(&address).unwrap();
     let balance: U256 = address_account.balance;
     evm.stack.push(balance).unwrap();
+}
+
+pub fn origin(evm: &mut Evm) {
+    let address: Address = evm.tx.from;
+    
+    let mut padded = [0u8; 32]; // length is 32 bytes
+    
+    // the address is 20bytes long, hence, padded with zero 
+    padded[12..].copy_from_slice(address.as_slice()); // 
+    
+    let value = U256::from_be_bytes(padded);
+    evm.stack.push(value).unwrap();
+}
+
+
+pub fn call_value(evm: &mut Evm) {
+    let value = evm.tx.value;
+    evm.stack.push(value).unwrap();
+}
+
+pub fn call_data_load(evm: &mut Evm) {
+    let offset = evm.stack.pop().unwrap();
+    let offset = offset.as_limbs()[0] as usize;
+    
+    let data = evm.tx.data.as_slice();
+    // let value = U256::from_be_bytes(data[offset..offset + 32].);
+    // evm.stack.push(value).unwrap();
+}
+
+pub fn gas_price(evm: &mut Evm) {
+    let gas_price = evm.tx.gas_limit;
+    evm.stack.push(gas_price).unwrap();
+}
+
+pub fn block_hash(evm: &mut Evm) {
+    // get the request block number from the stack
+    let block_number = evm.stack.pop().unwrap();
+    
+    // get the current block number from the block environment
+    let current_block_number = evm.block_env.number;
+    
+    // check if the requested block number 
+    // is within the range of the current block number
+    if block_number > current_block_number {
+        evm.stack.push(U256::ZERO).unwrap();
+    } else {
+        
+        // get the block hash from the block environment
+        let block_hash = evm.block_env.block_hash.as_limbs()[0];
+        
+        // evm.stack.push(block_hash).unwrap();
+    }
+    
+    
+    pub fn coin_base(evm: &mut Evm) {
+        let coin_base = evm.block_env.coinbase;
+        
+        evm.stack.push(U256::from_be_slice(coin_base.as_slice())).unwrap();
+    }
+    
+    pub fn timestamp(evm: &mut Evm) {
+        let timestamp = evm.block_env.timestamp;
+        
+        evm.stack.push(timestamp).unwrap();
+    }
+    
+    pub fn number(evm: &mut Evm) {
+        let number = evm.block_env.number;
+        
+        evm.stack.push(number).unwrap();
+    }
+    
+    pub fn gas_limit(evm: &mut Evm) {
+        let gas_limit = evm.block_env.gas_limit;
+        
+        evm.stack.push(gas_limit).unwrap();
+    }
+    
+    pub fn chain_id(evm: &mut Evm) {
+        let chain_id = evm.block_env.chain_id;
+        
+        evm.stack.push(chain_id).unwrap();
+    }
+    
+    pub fn pop(evm: &mut Evm) {
+        evm.stack.pop().unwrap();
+    }
+    
+    pub fn m_load(evm: &mut Evm) {
+        let offset = evm.stack.pop().unwrap();
+        
+        
+        evm.memory.load_word(offset.as_limbs()[0] as usize);
+    }
 }
