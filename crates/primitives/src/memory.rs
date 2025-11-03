@@ -23,9 +23,9 @@ impl Memory {
     }
 
     pub fn load_word(&self, offset: usize) -> U256 {
-         let bytes = &self.data[offset..offset + 32];
-         
-         U256::from_be_slice(bytes.try_into().unwrap())
+        let bytes = &self.data[offset..offset + 32];
+
+        U256::from_be_slice(bytes.try_into().unwrap())
     }
 
     pub fn store_byte(&mut self, offset: usize, byte: u8) {
@@ -35,7 +35,7 @@ impl Memory {
     pub fn load_byte(&self, offset: usize) -> u8 {
         self.data[offset]
     }
-    
+
     pub fn copy(&mut self, offset: usize, dest: usize, length: usize) -> u8 {
         let data = &self.data[offset..offset + length];
         0
