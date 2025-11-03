@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 evm_core = {workspace = true}
 primitives = {workspace = true}
+alloy = {workspace = true}
