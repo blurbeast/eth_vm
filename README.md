@@ -52,3 +52,4 @@ Notes
 - For exact semantics and gas rules consult https://www.evm.codes/.
 - To run locally: from repo root use `cargo build --workspace`
 
+- [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/blurbeast/eth_vm)
