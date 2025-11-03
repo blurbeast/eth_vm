@@ -1,13 +1,11 @@
 //!
 
-use std::io::Read;
-
 use alloy::primitives::U256;
 
 #[derive(Default, Debug, Clone)]
 pub struct Memory {
     // Fields
-    data: Vec<u8>,
+    pub data: Vec<u8>,
 }
 
 impl Memory {
@@ -36,5 +34,10 @@ impl Memory {
 
     pub fn load_byte(&self, offset: usize) -> u8 {
         self.data[offset]
+    }
+    
+    pub fn copy(&mut self, offset: usize, dest: usize, length: usize) -> u8 {
+        let data = &self.data[offset..offset + length];
+        0
     }
 }
