@@ -437,7 +437,8 @@ pub fn m_store8(evm: &mut Evm) {
     let offset = evm.stack.pop().unwrap();
     let value = evm.stack.pop().unwrap();
 
-    evm.memory.store_byte(offset.as_limbs()[0] as usize, value.as_limbs()[0] as u8);
+    evm.memory
+        .store_byte(offset.as_limbs()[0] as usize, value.as_limbs()[0] as u8);
 }
 
 /// SLOAD opcode handler (partial)

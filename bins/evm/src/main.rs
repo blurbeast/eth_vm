@@ -47,12 +47,12 @@ fn main() {
     let call_data: Vec<u8> = vec![
         0x60, 0x06, // PUSH1 0x06  -> push 6
         0x60, 0x07, // PUSH1 0x07  -> push 7
-        0x01,       // ADD         -> pop 7,6 push 13
+        0x01, // ADD         -> pop 7,6 push 13
         0x60, 0x00, // PUSH1 0x00  -> push memory offset 0
-        0x52,       // MSTORE      -> store 32-byte word at memory[offset]
+        0x52, // MSTORE      -> store 32-byte word at memory[offset]
         0x60, 0x00, // PUSH1 0x00  -> push memory offset 0 (to read back)
-        0x51,       // MLOAD       -> load 32-byte word from memory[offset]
-        0x00,       // STOP        -> halt
+        0x51, // MLOAD       -> load 32-byte word from memory[offset]
+        0x00, // STOP        -> halt
     ];
 
     // Block environment and memory initialization
@@ -66,7 +66,7 @@ fn main() {
     // If you want this to behave like contract creation code, you can set `tx.to` to Address::ZERO
     // (already the case here) and the VM code that seeds memory from `tx.data` will place these
     // bytes into memory for execution.
-    let tx: Transaction = Transaction{
+    let tx: Transaction = Transaction {
         from: Address::from_slice(&[1]),
         to: Address::ZERO,
         value: U256::ZERO,

@@ -48,7 +48,7 @@ pub enum ProgramExitStatus {
 /// - `memory: Memory`
 ///     - Linear, zero-indexed byte array that is transient during execution (not persisted between transactions).
 ///     - Used by `MSTORE`, `MLOAD`, `CALLDATACOPY`, `CODECOPY`, etc.
-///     - Important: this implementation expects memory to have sufficient length before reads/writes. 
+///     - Important: this implementation expects memory to have sufficient length before reads/writes.
 ///     - Example: to store a 32-byte word at offset 0 call `MSTORE` with offset `0` and the word; `memory.store_word(0, word)` writes 32 bytes starting at `memory.data[0]`.
 /// - `stack: Stack`
 ///     - LIFO stack that holds 256-bit values (`U256`). EVM opcodes push/pop values here.
@@ -111,7 +111,7 @@ impl Evm {
     /// What this `execute()` currently does (implementation-specific):
     /// - If `tx.to == Address::ZERO` (contract creation / deployment), it attempts to copy `tx.data` into memory so the init code is available for execution.
     /// - If `tx.to != Address::ZERO`, it attempts to load the touched contract's `code` from `storage` into memory.
- 
+
     /// - The current `execute()` uses `self.stack.data.is_empty()` NB: this does not reflect real-world checks.
     /// - This Implementation uses the unwrap which means errors are not handled.
     pub fn execute(&mut self) {
@@ -150,13 +150,13 @@ impl Evm {
     ///    - Ensure `memory` has been seeded with code (via `execute()` ) and `pc` points to the correct start.
     /// 2. `instruction = Opcode::from_u8(raw_instruction).unwrap()`:
     ///    - Convert the raw byte into the typed `Opcode` enum. If the byte is unknown, `from_u8` returns `None`.
-    ///    - `unwrap()` will panic on undefined bytes — not production friendly, 
+    ///    - `unwrap()` will panic on undefined bytes — not production friendly,
     /// 3. `let jump_tables = build_jump_table()`:
     ///    - Builds (currently on every `step`) a 256-entry table that maps opcode numeric values to handler functions (`fn(&mut Evm)`).
     /// 4. `jump_tables[instruction as usize](self)`:
     ///    - Call the handler function for the current opcode. Handlers mutate `stack`, `memory`, `pc`, `status`, and other parts of the EVM as needed.
-    ///    - Handlers that consume immediate bytes (e.g., `PUSH1..PUSH32`) 
-    
+    ///    - Handlers that consume immediate bytes (e.g., `PUSH1..PUSH32`)
+
     pub fn step(&mut self) {
         // Fetch the byte at the program counter from memory.
         let raw_instruction = self.memory.load_byte(self.pc);
