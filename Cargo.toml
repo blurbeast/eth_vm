@@ -5,3 +5,4 @@ members = ["bins/evm", "crates/evm_core", "crates/primitives"]
 alloy = "1.0.41"
 # alloy = {git = "https://github.com/alloy-rs/alloy", branch = "main"}
 primitives = { path = "./crates/primitives" }
+evm_core = { path = "./crates/evm_core" }
