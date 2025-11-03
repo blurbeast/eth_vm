@@ -184,11 +184,10 @@ pub fn and(evm: &mut Evm) {
     evm.stack.push(result).unwrap();
 }
 
-
 pub fn byte(evm: &mut Evm) {
     let index = evm.stack.pop().unwrap();
     let value = evm.stack.pop().unwrap();
-    
+
     if index.as_limbs()[0] > 32 {
         evm.stack.push(U256::ZERO).unwrap();
     } else {
@@ -203,26 +202,25 @@ pub fn mstore(evm: &mut Evm) {
     let value = evm.stack.pop().unwrap();
 
     let offset = offset.as_limbs()[0] as usize;
-    
-    evm.memory.store_word(offset, value);
 
+    evm.memory.store_word(offset, value);
 }
 
 pub fn address(evm: &mut Evm) {
     let address: Address = evm.tx.to;
-   
+
     let mut padded = [0u8; 32]; // length is 32 bytes
-    
-    // the address is 20bytes long, hence, padded with zero 
+
+    // the address is 20bytes long, hence, padded with zero
     padded[12..].copy_from_slice(address.as_slice()); // 
-    
+
     let value = U256::from_be_bytes(padded);
     evm.stack.push(value).unwrap();
 }
 
 pub fn balance(evm: &mut Evm) {
     let address: Address = evm.tx.from;
-    
+
     let address_account = evm.storage.data.get(&address).unwrap();
     let balance: U256 = address_account.balance;
     evm.stack.push(balance).unwrap();
@@ -230,16 +228,15 @@ pub fn balance(evm: &mut Evm) {
 
 pub fn origin(evm: &mut Evm) {
     let address: Address = evm.tx.from;
-    
+
     let mut padded = [0u8; 32]; // length is 32 bytes
-    
-    // the address is 20bytes long, hence, padded with zero 
+
+    // the address is 20bytes long, hence, padded with zero
     padded[12..].copy_from_slice(address.as_slice()); // 
-    
+
     let value = U256::from_be_bytes(padded);
     evm.stack.push(value).unwrap();
 }
-
 
 pub fn call_value(evm: &mut Evm) {
     let value = evm.tx.value;
@@ -249,7 +246,7 @@ pub fn call_value(evm: &mut Evm) {
 pub fn call_data_load(evm: &mut Evm) {
     let offset = evm.stack.pop().unwrap();
     let offset = offset.as_limbs()[0] as usize;
-    
+
     let data = evm.tx.data.as_slice();
     // let value = U256::from_be_bytes(data[offset..offset + 32].);
     // evm.stack.push(value).unwrap();
@@ -263,51 +260,51 @@ pub fn gas_price(evm: &mut Evm) {
 pub fn block_hash(evm: &mut Evm) {
     // get the request block number from the stack
     let block_number = evm.stack.pop().unwrap();
-    
+
     // get the current block number from the block environment
     let current_block_number = evm.block_env.number;
-    
-    // check if the requested block number 
+
+    // check if the requested block number
     // is within the range of the current block number
     if block_number > current_block_number {
         evm.stack.push(U256::ZERO).unwrap();
     } else {
-        
         // get the block hash from the block environment
         let block_hash = evm.block_env.block_hash.as_limbs()[0];
-        
+
         // evm.stack.push(block_hash).unwrap();
     }
-    
 }
 
 pub fn coin_base(evm: &mut Evm) {
     let coin_base = evm.block_env.coinbase;
-    
-    evm.stack.push(U256::from_be_slice(coin_base.as_slice())).unwrap();
+
+    evm.stack
+        .push(U256::from_be_slice(coin_base.as_slice()))
+        .unwrap();
 }
 
 pub fn timestamp(evm: &mut Evm) {
     let timestamp = evm.block_env.timestamp;
-    
+
     evm.stack.push(timestamp).unwrap();
 }
 
 pub fn number(evm: &mut Evm) {
     let number = evm.block_env.number;
-    
+
     evm.stack.push(number).unwrap();
 }
 
 pub fn gas_limit(evm: &mut Evm) {
     let gas_limit = evm.block_env.gas_limit;
-    
+
     evm.stack.push(gas_limit).unwrap();
 }
 
 pub fn chain_id(evm: &mut Evm) {
     let chain_id = evm.block_env.chain_id;
-    
+
     evm.stack.push(chain_id).unwrap();
 }
 
@@ -317,55 +314,56 @@ pub fn pop(evm: &mut Evm) {
 
 pub fn m_load(evm: &mut Evm) {
     let offset = evm.stack.pop().unwrap();
-    
+
     let word = evm.memory.load_word(offset.as_limbs()[0] as usize);
-    
+
     evm.stack.push(word).unwrap();
 }
 
 pub fn m_store(evm: &mut Evm) {
     let offset = evm.stack.pop().unwrap();
     let value = evm.stack.pop().unwrap();
-    
+
     evm.memory.store_word(offset.as_limbs()[0] as usize, value);
 }
 
 pub fn m_store8(evm: &mut Evm) {
     let offset = evm.stack.pop().unwrap();
     let value = evm.stack.pop().unwrap();
-    
-    evm.memory.store_byte(offset.as_limbs()[0] as usize, value.as_limbs()[0] as u8);
+
+    evm.memory
+        .store_byte(offset.as_limbs()[0] as usize, value.as_limbs()[0] as u8);
 }
 
-pub fn s_load(evm: &mut Evm){
+pub fn s_load(evm: &mut Evm) {
     let offset = evm.stack.pop().unwrap();
-    
+
     let locator: Address = evm.tx.to;
-    
+
     let word = evm.storage.s_load(locator, offset);
-    
+
     // evm.stack.push(word).unwrap();
 }
 
-pub fn s_store(evm: &mut Evm){
+pub fn s_store(evm: &mut Evm) {
     let offset = evm.stack.pop().unwrap();
     let value = evm.stack.pop().unwrap();
-    
+
     let locator: Address = evm.tx.to;
-    
+
     evm.storage.s_store(locator, offset, value);
 }
 
 pub fn jump(evm: &mut Evm) {
     let target = evm.stack.pop().unwrap();
-    
+
     evm.pc = target.as_limbs()[0] as usize;
 }
 
 pub fn jumpi(evm: &mut Evm) {
     let target = evm.stack.pop().unwrap();
     let condition = evm.stack.pop().unwrap();
-    
+
     if condition.as_limbs()[0] != 0 {
         evm.pc = target.as_limbs()[0] as usize;
     }
@@ -374,7 +372,6 @@ pub fn jumpi(evm: &mut Evm) {
 pub fn jump_dest(evm: &mut Evm) {
     let pc = evm.pc;
 }
-
 
 pub fn pc(evm: &mut Evm) {
     evm.pc;
@@ -392,13 +389,10 @@ pub fn m_copy(evm: &mut Evm) {
     let offset = evm.stack.pop().unwrap();
     let length = evm.stack.pop().unwrap();
     let dest = evm.stack.pop().unwrap();
-    
+
     // evm.memory.copy(offset.as_limbs()[0] as usize, dest.as_limbs()[0] as usize, length.as_limbs()[0] as usize);
-    
 }
 
 pub fn push_0(evm: &mut Evm) {
     evm.stack.push(U256::ZERO).unwrap();
 }
-
-

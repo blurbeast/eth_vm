@@ -1,9 +1,9 @@
+pub mod constants;
 pub mod errors;
 pub mod evm_types;
 pub mod memory;
 pub mod stack;
 pub mod storage;
-pub mod constants;
 
 pub fn add(left: u64, right: u64) -> u64 {
     left + right
