@@ -28,7 +28,8 @@ pub struct BlockEnv {
 pub struct EvmAccount {
     pub balance: U256,
     pub nonce: U256,
-    pub code: Vec<u8>,
+    pub code: Vec<u8>, 
+    pub word: HashMap<U256, U256>,
 }
 
 #[derive(Debug, Clone, Default)]

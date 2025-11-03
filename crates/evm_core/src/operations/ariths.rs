@@ -279,45 +279,120 @@ pub fn block_hash(evm: &mut Evm) {
         // evm.stack.push(block_hash).unwrap();
     }
     
+}
+
+pub fn coin_base(evm: &mut Evm) {
+    let coin_base = evm.block_env.coinbase;
     
-    pub fn coin_base(evm: &mut Evm) {
-        let coin_base = evm.block_env.coinbase;
-        
-        evm.stack.push(U256::from_be_slice(coin_base.as_slice())).unwrap();
-    }
+    evm.stack.push(U256::from_be_slice(coin_base.as_slice())).unwrap();
+}
+
+pub fn timestamp(evm: &mut Evm) {
+    let timestamp = evm.block_env.timestamp;
     
-    pub fn timestamp(evm: &mut Evm) {
-        let timestamp = evm.block_env.timestamp;
-        
-        evm.stack.push(timestamp).unwrap();
-    }
+    evm.stack.push(timestamp).unwrap();
+}
+
+pub fn number(evm: &mut Evm) {
+    let number = evm.block_env.number;
     
-    pub fn number(evm: &mut Evm) {
-        let number = evm.block_env.number;
-        
-        evm.stack.push(number).unwrap();
-    }
+    evm.stack.push(number).unwrap();
+}
+
+pub fn gas_limit(evm: &mut Evm) {
+    let gas_limit = evm.block_env.gas_limit;
     
-    pub fn gas_limit(evm: &mut Evm) {
-        let gas_limit = evm.block_env.gas_limit;
-        
-        evm.stack.push(gas_limit).unwrap();
-    }
+    evm.stack.push(gas_limit).unwrap();
+}
+
+pub fn chain_id(evm: &mut Evm) {
+    let chain_id = evm.block_env.chain_id;
     
-    pub fn chain_id(evm: &mut Evm) {
-        let chain_id = evm.block_env.chain_id;
-        
-        evm.stack.push(chain_id).unwrap();
-    }
+    evm.stack.push(chain_id).unwrap();
+}
+
+pub fn pop(evm: &mut Evm) {
+    evm.stack.pop().unwrap();
+}
+
+pub fn m_load(evm: &mut Evm) {
+    let offset = evm.stack.pop().unwrap();
     
-    pub fn pop(evm: &mut Evm) {
-        evm.stack.pop().unwrap();
-    }
+    let word = evm.memory.load_word(offset.as_limbs()[0] as usize);
     
-    pub fn m_load(evm: &mut Evm) {
-        let offset = evm.stack.pop().unwrap();
-        
-        
-        evm.memory.load_word(offset.as_limbs()[0] as usize);
+    evm.stack.push(word).unwrap();
+}
+
+pub fn m_store(evm: &mut Evm) {
+    let offset = evm.stack.pop().unwrap();
+    let value = evm.stack.pop().unwrap();
+    
+    evm.memory.store_word(offset.as_limbs()[0] as usize, value);
+}
+
+pub fn m_store8(evm: &mut Evm) {
+    let offset = evm.stack.pop().unwrap();
+    let value = evm.stack.pop().unwrap();
+    
+    evm.memory.store_byte(offset.as_limbs()[0] as usize, value.as_limbs()[0] as u8);
+}
+
+pub fn s_load(evm: &mut Evm){
+    let offset = evm.stack.pop().unwrap();
+    
+    let locator: Address = evm.tx.to;
+    
+    let word = evm.storage.s_load(locator, offset);
+    
+    // evm.stack.push(word).unwrap();
+}
+
+pub fn s_store(evm: &mut Evm){
+    let offset = evm.stack.pop().unwrap();
+    let value = evm.stack.pop().unwrap();
+    
+    let locator: Address = evm.tx.to;
+    
+    evm.storage.s_store(locator, offset, value);
+}
+
+pub fn jump(evm: &mut Evm) {
+    let target = evm.stack.pop().unwrap();
+    
+    evm.pc = target.as_limbs()[0] as usize;
+}
+
+pub fn jumpi(evm: &mut Evm) {
+    let target = evm.stack.pop().unwrap();
+    let condition = evm.stack.pop().unwrap();
+    
+    if condition.as_limbs()[0] != 0 {
+        evm.pc = target.as_limbs()[0] as usize;
     }
+}
+
+pub fn jump_dest(evm: &mut Evm) {
+    let pc = evm.pc;
+}
+
+
+pub fn pc(evm: &mut Evm) {
+    evm.pc;
+}
+
+pub fn m_size(evm: &mut Evm) {
+    evm.memory.data.len();
+}
+
+pub fn gas(evm: &mut Evm) {
+    evm.block_env.gas_limit;
+}
+
+pub fn m_copy(evm: &mut Evm) {
+    let offset = evm.stack.pop().unwrap();
+    let length = evm.stack.pop().unwrap();
+    let dest = evm.stack.pop().unwrap();
+    
+    // evm.memory.copy(offset.as_limbs()[0] as usize, dest.as_limbs()[0] as usize, length.as_limbs()[0] as usize);
+    
 }
