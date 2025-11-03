@@ -580,20 +580,3 @@ fn main() {
     // println!("Hello, world!");
 }
 ```
-
-Recommended next steps to get a robust reference implementation
-
-1. Implement memory growth and bounds checking in `Memory`.
-2. Replace `unwrap()` with safe error returns and introduce a `Result`-based opcode return convention (or an error status on `Evm`).
-3. Implement gas metering and per-opcode cost model.
-4. Build a static jump-table (static once-initialized) to avoid reallocating each step.
-5. Add tests that compare behavior against canonical outcomes (e.g., against test vectors or a reference client).
-6. Wire the remaining opcodes to their handlers and implement missing handlers (especially `PUSHn`, `DUP`, `SWAP`, `LOG`, `CALL*`, `CREATE*`) and implement `CALLDATA` / `RETURNDATA` semantics.
-
-If you want, I can:
-
-- generate a mapping CSV of opcode byte -> name -> current handler location (based on code),
-- add a static jump table implementation,
-- or create a template to implement `PUSH1`/`PUSH32` and wiring into the table with proper memory growth and stack checks.
-
-Tell me which one you'd like next (mapping CSV / static jump table implementation / add PUSH handlers / add gas accounting), and I will implement it and update the code.
