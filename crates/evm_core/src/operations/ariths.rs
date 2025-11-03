@@ -396,3 +396,9 @@ pub fn m_copy(evm: &mut Evm) {
     // evm.memory.copy(offset.as_limbs()[0] as usize, dest.as_limbs()[0] as usize, length.as_limbs()[0] as usize);
     
 }
+
+pub fn push_0(evm: &mut Evm) {
+    evm.stack.push(U256::ZERO).unwrap();
+}
+
+
